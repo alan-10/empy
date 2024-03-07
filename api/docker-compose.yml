@@ -1,24 +1,24 @@
 version: "3.9"
 
 services:
-  api:
-    depends_on:
-      - postgresql
-    build:
-      dockerfile: Dockerfile
-      context: .
-      # Only will build development stage from our dockerfile
-      target: development
-    volumes:
-      - .:/usr/src/app
-    # env_file:
-    # - .env.development
-    # Run a command against the development stage of the image
-    # command: 
-    command: npx npx prisma migrate dev &&  npm run start:dev 
+  # api:
+  #   depends_on:
+  #     - postgresql
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: .
+  #     # Only will build development stage from our dockerfile
+  #     target: development
+  #   volumes:
+  #     - .:/usr/src/app
+  #   # env_file:
+  #   # - .env.development
+  #   # Run a command against the development stage of the image
+  #   # command: 
+  #   command: npx npx prisma migrate dev &&  npm run start:dev 
 
-    ports:
-      - 3001:3001
+  #   ports:
+  #     - 3001:3001
   postgresql:
     image: postgres:13
     container_name: dc-postgres

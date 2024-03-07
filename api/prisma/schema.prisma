@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  // previewFeatures = ["relationJoins"]
+  binaryTargets =  ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Assistant {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  phone     String
+  portfolio Portfolio?
+}
+
+model Portfolio {
+  id String @id @default(uuid())
+
+  assistant   Assistant @relation(fields: [assistantId], references: [id])
+  assistantId String    @unique
+  client      Client[]
+}
+
+model Client {
+  id          String     @id @default(uuid())
+  name        String
+  code        String
+  merchant    String
+  portifolio  Portfolio? @relation(fields: [portfolioId], references: [id])
+  portfolioId String?
+}

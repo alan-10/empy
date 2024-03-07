@@ -68,8 +68,8 @@ const AssistantComponent: React.FC<AllAssistants> = (props: AllAssistants): JSX.
               </Button>
 
               <CadastroDialog titleDialog='Cadastro de Assistente Comercial'
-                param1='Nome Completo' param2='Email'
-                param3='Telefone'
+                param1={{value: 'Nome Completo', placeholder: 'Digite o nome'}} param2={{value:'Email', placeholder: 'Digite o Email'}}
+                param3={{value: 'Telefone', placeholder: 'Digite o Telefone'}}
                 isOpen={cadastroDialogAberto} onClose={fecharCadastroDialog}
                 saveOption={{ assistant: true }}
               />

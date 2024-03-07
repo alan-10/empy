@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -12,7 +12,14 @@ import { Label } from "./ui/label"
 import { Button } from './ui/button';
 import { api } from '../axios/api'
 
-import { ContextCreate} from '../useContext'
+import { ContextCreate } from '../useContext'
+
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 
 
 interface SaveOptions {
@@ -32,14 +39,18 @@ interface ICreateClient {
   merchant: string
 }
 
+interface TypeParams {
+  value: string,
+  placeholder: string
+}
 
 interface CadastroDialogProps {
   isOpen: boolean;
   onClose: () => void;
   titleDialog: string;
-  param1: string;
-  param2: string;
-  param3: string;
+  param1: TypeParams;
+  param2: TypeParams;
+  param3: TypeParams;
   saveOption: SaveOptions
 }
 
@@ -50,6 +61,12 @@ const CadastroDialog: React.FC<CadastroDialogProps> = ({ isOpen, onClose, titleD
   const [inputParam1, setInputParam1] = useState('')
   const [inputParam2, setInputParam2] = useState('')
   const [inputParam3, setInputParam3] = useState('')
+  const [isEmailvalid, setIsEmailvalid] = useState(true)
+
+  useMemo(() => {
+    setIsEmailvalid(true)
+  }, [isOpen])
+
 
 
   const handleParam1 = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,12 +90,42 @@ const CadastroDialog: React.FC<CadastroDialogProps> = ({ isOpen, onClose, titleD
     }
 
     if (saveOption.assistant) {
-      await createAssistant({ name: inputParam1, email: inputParam2, phone: inputParam3 })
+
+      if (!validateEmal(inputParam2)) {
+        return
+      }
+
+      try {
+        await createAssistant({ name: inputParam1, email: inputParam2, phone: inputParam3 })
+      } catch (err) {
+        alert('Já existe um Assistente com este email')
+      }
     }
 
     if (saveOption.client) {
-      await createclient({ code: inputParam1, name: inputParam2, merchant: inputParam3 })
+      try {
+        await createclient({ code: inputParam1, name: inputParam2, merchant: inputParam3 })
+      } catch (error) {
+        alert('Client não pode ter o mesmo código pra esta rede')
+      }
     }
+  }
+
+
+
+
+  function validateEmal(email: string) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isvalidEmail = regex.test(email);
+    console.log('isvalid', isvalidEmail);
+
+    if (!isvalidEmail) {
+      setIsEmailvalid(false)
+      return false
+    }
+
+    setIsEmailvalid(true)
+    return true
   }
 
 
@@ -98,7 +145,7 @@ const CadastroDialog: React.FC<CadastroDialogProps> = ({ isOpen, onClose, titleD
   return (
 
     <Dialog open={isOpen}>
-
+      <ToastContainer />
       <DialogContent className="sm:max-w-[800px] h-[479px] bg-white">
         <DialogHeader>
           <DialogTitle className="font-sans">{titleDialog}</DialogTitle>
@@ -107,26 +154,30 @@ const CadastroDialog: React.FC<CadastroDialogProps> = ({ isOpen, onClose, titleD
         <form className="grid gap-4 border border-bg-customDark-12 rounded-3xl p-2 " onSubmit={submit}>
           <div className="grid grid-cols-4 items-center gap-2">
             <div className="col-span-4 text-left">
-              <Label htmlFor="codeClient">{param1}</Label>
+              <Label htmlFor="codeClient">{param1.value} </Label>
+
             </div>
             <div className="col-span-4">
-              <Input id="codeClient" placeholder="Digite seu nome" className="rounded-xl p-4" onChange={handleParam1} />
+              <Input id="codeClient" placeholder={param1.placeholder} className="rounded-xl p-4" onChange={handleParam1} />
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-2">
             <div className="col-span-4 text-left">
-              <Label htmlFor="nameClient">{param2}</Label>
+              <Label htmlFor="nameClient">{param2.value}{(!isEmailvalid && isOpen) && (
+                <span style={{ color: 'red', fontSize: '15px', marginLeft: '10px' }}
+                >email inválido</span>
+              )}</Label>
             </div>
             <div className="col-span-4">
-              <Input id="nameClient" placeholder="Digite seu e-mail" className="rounded-xl p-4" onChange={handleParam2} />
+              <Input id="nameClient" placeholder={param2.placeholder} className="rounded-xl p-4" onChange={handleParam2} />
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-2">
             <div className="col-span-4 text-left">
-              <Label htmlFor="network">{param3}</Label>
+              <Label htmlFor="network">{param3.value}</Label>
             </div>
             <div className="col-span-4">
-              <Input id="network" placeholder="Digite seu telefone" className="rounded-xl p-4" onChange={handleParam3} />
+              <Input id="network" placeholder={param3.placeholder} className="rounded-xl p-4" onChange={handleParam3} />
             </div>
           </div>
           <div className="">

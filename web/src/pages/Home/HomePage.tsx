@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import AssistantComponent from './components/AssistantComponent';
-import ClientComponent from './components/ClientComponent';
 import styled from 'styled-components';
 import TableComponent from '../../components/TableComponent';
 import CadastroDialog from '../../components/CadastroDialog';
 import { api } from '../../axios/api'
 import { useContext } from 'react'
 import { ContextCreate } from '../../useContext';
-import {  LeftSideBar  } from './components/LeftSideBar'
+import { LeftSideBar } from './components/LeftSideBar'
 
 const FlexContainer = styled.div`
   display: flex;
@@ -160,13 +159,13 @@ const Home: React.FC = () => {
 
 
   return (
-  
-    
+
+
     <div className="flex h-screen">
-    <LeftSideBar />
+      <LeftSideBar />
       {/* <Sidebar /> */}
 
-      <div className="flex-1 overflow-hidden p-4 pl-32" style={{maxHeight: '100vh'}}>
+      <div className="flex-1 overflow-hidden p-4 pl-32" style={{ maxHeight: '100vh' }}>
         <h1 style={{ fontWeight: 'bold', fontSize: '28px', color: '#121929', fontFamily: 'Arial' }}>
           Carteira de Clientes
         </h1>
@@ -179,19 +178,20 @@ const Home: React.FC = () => {
                 text: "Adicionar cliente",
                 onClick: abrirCadastroDialog,
               }}
-              button2={{ text: "Vincular ", 
-              color: 'blue', 
-              onClick: () => vinculateClientsInPortfolioAssitant(contextApi?.assistantSelected) 
-            }}
+              button2={{
+                text: "Vincular ",
+                color: 'blue',
+                onClick: () => vinculateClientsInPortfolioAssitant(contextApi?.assistantSelected)
+              }}
               clients={clientesWithoutPortfolio}
             />
           </div>
 
           <CadastroDialog
             titleDialog='Cadastro de Cliente'
-            param1='Código do Cliente'
-            param2='Nome Completo'
-            param3='Rede'
+            param1={{ value: 'Código do Cliente', placeholder: 'Digite o Código' }}
+            param2={{ value: 'Nome Completo', placeholder: 'Digite o Nome Completo' }}
+            param3={{ value: 'Rede', placeholder: 'Digite a Rede' }}
             isOpen={cadastroDialogAberto} onClose={fecharCadastroDialog}
             saveOption={{ client: true }}
           />
@@ -200,18 +200,20 @@ const Home: React.FC = () => {
             <TableComponent
               tableHeaderText={{ name: `Cateira do ${nameAssistant}` }}
 
-              button2={{ text: "Desvincular",
-              color: '#EB2F0A',
-               onClick: () => unlinkClintPortfolio(contextApi?.assistantSelected) }}
+              button2={{
+                text: "Desvincular",
+                color: '#EB2F0A',
+                onClick: () => unlinkClintPortfolio(contextApi?.assistantSelected)
+              }}
               clients={clientByPortfolioAssistant}
             />
           </div>
         </FlexContainer>
       </div>
     </div>
-  
+
   );
-  
+
 };
 
 export default Home;

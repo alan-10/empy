@@ -3,7 +3,7 @@
 ####  2. Entrar na pasta api e rodar o comando `docker compose up --build` para startar o banco de dados
 ####  3. Nesta mesma pasta executar os seguinetes comandos
  - npm ci
- - npx prisma migratate dev
+ - npx prisma migrate dev
  - npm run start:dev
    
     Estes comandos baixará as dependencias, criará as tabelas no banco de dados e vai startar o backend
